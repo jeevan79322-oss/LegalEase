@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LegalEase - AI Legal Document Generator</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            color: #1f2937;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 22px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .header-content {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .tagline {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .intro h1 {
+            margin-bottom: 8px;
+            color: #172554;
+        }
+
+        .intro p {
+            color: #64748b;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: #172554;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        #terms {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 11px 17px;
+            margin-top: 15px;
+            margin-right: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            background: #2563eb;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .secondary {
+            background: #475569;
+        }
+
+        .success {
+            background: #15803d;
+        }
+
+        .download {
+            background: #7c3aed;
+        }
+
+        #loading {
+            display: none;
+            margin-top: 15px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        #status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* DOCUMENT PREVIEW */
+
+        .preview-container {
+            background: #dbe2ea;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        .document-page {
+            background: white;
+            max-width: 850px;
+            margin: auto;
+            padding: 55px;
+            min-height: 700px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+            font-family: "Times New Roman", serif;
+        }
+
+        .document-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .document-subtitle {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .document-content {
+            white-space: pre-wrap;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .document-content .heading {
+            display: block;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        .document-content .bullet {
+            display: block;
+            margin-left: 25px;
+            margin-bottom: 5px;
+        }
+
+        .signature-section {
+            margin-top: 45px;
+        }
+
+        .signature-line {
+            display: inline-block;
+            width: 250px;
+            border-bottom: 1px solid #111827;
+            margin-top: 30px;
+        }
+
+        .disclaimer {
+            background: #fff7ed;
+            border-left: 4px solid #f97316;
+            padding: 14px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #7c2d12;
+        }
+
+        footer {
+            margin-top: 40px;
+            padding: 25px;
+            text-align: center;
+            background: #172554;
+            color: white;
+            font-size: 13px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin-top: 20px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .preview-container {
+                padding: 10px;
+            }
+
+            .document-page {
+                padding: 25px;
+            }
+
+            button {
+                width: 100%;
+                margin-right: 0;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div class="header-content">
+
+        <div class="brand">
+            ⚖ LegalEase
+        </div>
+
+        <div class="tagline">
+            AI-Powered Legal Document Generator
+        </div>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+
+    <div class="intro">
+
+        <h1>Create Legal Documents Easily</h1>
+
+        <p>
+            Generate, edit and download professional legal documents
+            using AI.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Document Information</h2>
+
+
+        <label>
+            Document Type
+        </label>
+
+        <input
+            id="document_type"
+            placeholder="Example: Non-Disclosure Agreement (NDA)"
+        >
+
+
+        <label>
+            Parties Involved
+        </label>
+
+        <input
+            id="parties"
+            placeholder="Example: Company A and Person B"
+        >
+
+
+        <label>
+            Terms and Conditions
+        </label>
+
+        <textarea
+            id="terms"
+            placeholder="Enter the important terms and conditions..."
+        ></textarea>
+
+
+        <label>
+            Effective Date
+        </label>
+
+        <input
+            id="dates"
+            placeholder="Example: 24 September 2026"
+        >
+
+
+        <button onclick="generateDocument()">
+            Generate Document
+        </button>
+
+
+        <div id="loading">
+            Generating your legal document... Please wait.
+        </div>
+
+        <div id="status"></div>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Document Preview</h2>
+
+
+        <div class="preview-container">
+
+            <div class="document-page">
+
+                <div
+                    id="documentTitle"
+                    class="document-title"
+                >
+                    Legal Document
+                </div>
+
+
+                <div
+                    id="documentSubtitle"
+                    class="document-subtitle"
+                >
+                    LegalEase
+                </div>
+
+
+                <div
+                    id="documentContent"
+                    class="document-content"
+                >
+                    Your generated document will appear here.
+                </div>
+
+
+                <div
+                    id="signatureSection"
+                    class="signature-section hidden"
+                >
+
+                    <strong>Signatures</strong>
+
+                    <br><br>
+
+                    Party 1:
+                    <span class="signature-line"></span>
+
+                    <br><br>
+
+                    Party 2:
+                    <span class="signature-line"></span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="editButton"
+            class="hidden secondary"
+            onclick="editDocument()"
+        >
+            Edit Document
+        </button>
+
+
+        <button
+            id="saveButton"
+            class="hidden success"
+            onclick="saveDocument()"
+        >
+            Save Changes
+        </button>
+
+
+        <br>
+
+
+        <button
+            id="txtButton"
+            class="hidden download"
+            onclick="downloadTXT()"
+        >
+            Download as TXT
+        </button>
+
+
+        <button
+            id="docxButton"
+            class="hidden download"
+            onclick="downloadDOCX()"
+        >
+            Download as DOCX
+        </button>
+
+
+        <button
+            id="pdfButton"
+            class="hidden download"
+            onclick="downloadPDF()"
+        >
+            Download as PDF
+        </button>
+
+
+        <div class="disclaimer">
+
+            <strong>Important:</strong>
+
+            LegalEase generates documents for drafting and
+            informational purposes only. Please have the document
+            reviewed by a qualified legal professional before using
+            it for an actual legal matter.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    LegalEase © 2026
+
+    <br>
+
+    AI-powered legal document drafting and formatting system.
+
+</footer>
+
+
+<script>
+
+
+let generatedDocument = "";
+
+
+/* DISPLAY DOCUMENT */
+
+function displayDocument(text) {
+
+    const content =
+        document.getElementById("documentContent");
+
+    const title =
+        document.getElementById("documentTitle");
+
+    const subtitle =
+        document.getElementById("documentSubtitle");
+
+
+    title.textContent =
+        document.getElementById("document_type").value
+        || "Legal Document";
+
+
+    subtitle.textContent =
+        "Generated by LegalEase";
+
+
+    content.innerHTML = "";
+
+
+    const lines =
+        text.split("\n");
+
+
+    lines.forEach(function(line) {
+
+        const cleanLine =
+            line.trim();
+
+
+        if (!cleanLine) {
+
+            const spacer =
+                document.createElement("div");
+
+            spacer.style.height = "8px";
+
+            content.appendChild(spacer);
+
+            return;
+        }
+
+
+        const element =
+            document.createElement("div");
+
+
+        if (
+            cleanLine.startsWith("-") ||
+            cleanLine.startsWith("*") ||
+            cleanLine.startsWith("•")
+        ) {
+
+            element.className = "bullet";
+
+            element.textContent =
+                "• " +
+                cleanLine.substring(1).trim();
+
+        }
+
+        else if (
+            cleanLine.toUpperCase() === cleanLine &&
+            cleanLine.length < 100
+        ) {
+
+            element.className = "heading";
+
+            element.textContent =
+                cleanLine;
+
+        }
+
+        else if (
+            cleanLine.endsWith(":")
+        ) {
+
+            element.className = "heading";
+
+            element.textContent =
+                cleanLine;
+
+        }
+
+        else {
+
+            element.textContent =
+                cleanLine;
+
+        }
+
+
+        content.appendChild(element);
+
+    });
+
+
+    document.getElementById(
+        "signatureSection"
+    ).classList.remove("hidden");
+
+}
+
+
+/* GENERATE */
+
+async function generateDocument() {
+
+    const loading =
+        document.getElementById("loading");
+
+    const status =
+        document.getElementById("status");
+
+
+    loading.style.display = "block";
+
+    status.textContent = "";
+
+
+    const requestData = {
+
+        document_type:
+            document.getElementById("document_type").value,
+
+        parties:
+            document.getElementById("parties").value,
+
+        terms:
+            document.getElementById("terms").value,
+
+        dates:
+            document.getElementById("dates").value
+
+    };
+
+
+    if (
+        !requestData.document_type ||
+        !requestData.parties ||
+        !requestData.terms ||
+        !requestData.dates
+    ) {
+
+        loading.style.display = "none";
+
+        status.textContent =
+            "Please fill in all fields before generating.";
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/generate",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(requestData)
+                }
+            );
+
+
+        const responseData =
+            await response.json();
+
+
+        if (responseData.success) {
+
+            generatedDocument =
+                responseData.document;
+
+
+            displayDocument(
+                generatedDocument
+            );
+
+
+            document.getElementById(
+                "editButton"
+            ).classList.remove("hidden");
+
+
+            document.getElementById(
+                "txtButton"
+            ).classList.remove("hidden");
+
+
+            document.getElementById(
+                "docxButton"
+            ).classList.remove("hidden");
+
+
+            document.getElementById(
+                "pdfButton"
+            ).classList.remove("hidden");
+
+
+            status.textContent =
+                "Document generated successfully.";
+
+        }
+
+        else {
+
+            status.textContent =
+                "Error: " +
+                responseData.detail;
+
+        }
+
+    }
+
+    catch (error) {
+
+        status.textContent =
+            "Connection error: " +
+            error.message;
+
+    }
+
+
+    loading.style.display = "none";
+
+}
+
+
+/* EDIT */
+
+function editDocument() {
+
+    const content =
+        document.getElementById(
+            "documentContent"
+        );
+
+
+    content.contentEditable = "true";
+
+    content.focus();
+
+
+    document.getElementById(
+        "editButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "saveButton"
+    ).classList.remove("hidden");
+
+}
+
+
+/* SAVE */
+
+function saveDocument() {
+
+    const content =
+        document.getElementById(
+            "documentContent"
+        );
+
+
+    content.contentEditable = "false";
+
+
+    generatedDocument =
+        content.innerText;
+
+
+    document.getElementById(
+        "saveButton"
+    ).classList.add("hidden");
+
+
+    document.getElementById(
+        "editButton"
+    ).classList.remove("hidden");
+
+
+    document.getElementById(
+        "status"
+    ).textContent =
+        "Changes saved successfully.";
+
+}
+
+
+/* TXT */
+
+function downloadTXT() {
+
+    const text =
+        generatedDocument;
+
+
+    if (!text.trim()) {
+
+        alert(
+            "Please generate a document first."
+        );
+
+        return;
+    }
+
+
+    const blob =
+        new Blob(
+            [text],
+            {
+                type: "text/plain"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href = url;
+
+    link.download =
+        "LegalEase_Document.txt";
+
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* DOCX */
+
+async function downloadDOCX() {
+
+    const text =
+        generatedDocument;
+
+
+    if (!text.trim()) {
+
+        alert(
+            "Please generate a document first."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/download-docx",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            document: text
+                        })
+                }
+            );
+
+
+        if (!response.ok) {
+
+            const errorData =
+                await response.json();
+
+            alert(
+                "DOCX download failed: " +
+                errorData.detail
+            );
+
+            return;
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+
+        link.href = url;
+
+        link.download =
+            "LegalEase_Document.docx";
+
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+
+        URL.revokeObjectURL(url);
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Connection error: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* PDF */
+
+async function downloadPDF() {
+
+    const text =
+        generatedDocument;
+
+
+    if (!text.trim()) {
+
+        alert(
+            "Please generate a document first."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/download-pdf",
+                {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            document: text
+                        })
+                }
+            );
+
+
+        if (!response.ok) {
+
+            const errorData =
+                await response.json();
+
+            alert(
+                "PDF download failed: " +
+                errorData.detail
+            );
+
+            return;
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+
+        link.href = url;
+
+        link.download =
+            "LegalEase_Document.pdf";
+
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        document.body.removeChild(link);
+
+
+        URL.revokeObjectURL(url);
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Connection error: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
